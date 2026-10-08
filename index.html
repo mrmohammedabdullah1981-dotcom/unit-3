@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بنك الكلمات التفاعلي والاختبار الإلكتروني</title>
+  <!-- Google Fonts & Font Awesome & Canvas Confetti -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Poppins:wght@400;600;700&family=Cinzel:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-dark: #0f172a;
+      --secondary: #d97706;
+      --accent: #10b981;
+      --gold: #d4af37;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 16px;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .en {
+      font-family: 'Poppins', sans-serif;
+      direction: ltr;
+      text-align: left;
+    }
+
+    .ar {
+      direction: rtl;
+      text-align: right;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: white;
+      padding: 2.5rem 1.5rem 2rem;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      position: relative;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      color: #f8fafc;
+    }
+
+    header p {
+      color: #94a3b8;
+      font-size: 1.1rem;
+    }
+
+    .meta-bar {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+    }
+
+    .meta-tag {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      padding: 0.5rem 1.2rem;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .meta-tag i {
+      color: var(--gold);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1050px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      flex: 1;
+      width: 100%;
+    }
+
+    /* Tabs */
+    .nav-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .tab-btn {
+      background: white;
+      border: 2px solid var(--border);
+      padding: 0.8rem 1.8rem;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 4px 15px rgba(30, 58, 138, 0.3);
+      transform: translateY(-2px);
+    }
+
+    /* Student Name Card */
+    .student-card {
+      background: white;
+      padding: 1.2rem 1.8rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .student-card label {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 1.1rem;
+      white-space: nowrap;
+    }
+
+    .student-card input {
+      flex: 1;
+      min-width: 200px;
+      padding: 0.7rem 1.2rem;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-size: 1.05rem;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .student-card input:focus {
+      border-color: var(--primary);
+    }
+
+    /* Word List Grid */
+    .word-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.2rem;
+    }
+
+    .word-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.4rem 1.8rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .word-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px -10px rgba(0,0,0,0.1);
+    }
+
+    .word-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 0.8rem;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    .word-en-box {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .word-en {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .audio-btn {
+      background: #eff6ff;
+      border: none;
+      color: var(--primary);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: all 0.2s;
+    }
+
+    .audio-btn:hover {
+      background: var(--primary);
+      color: white;
+      transform: scale(1.1);
+    }
+
+    .word-ar {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0f766e;
+    }
+
+    .sentences-box {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      background: #f8fafc;
+      padding: 1rem 1.2rem;
+      border-radius: 12px;
+      border-left: 4px solid var(--secondary);
+    }
+
+    .sentence-en {
+      color: #1e293b;
+      font-size: 1.05rem;
+      line-height: 1.5;
+    }
+
+    .sentence-ar {
+      color: #475569;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    /* Quiz Area */
+    .quiz-view {
+      display: none;
+    }
+
+    .quiz-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 2.2rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .q-number {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .q-points {
+      background: #fef3c7;
+      color: #b45309;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .q-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    .q-options {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.8rem;
+    }
+
+    .option-label {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1rem 1.2rem;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1.05rem;
+      transition: all 0.2s;
+    }
+
+    .option-label:hover {
+      border-color: var(--primary);
+      background: #f8fafc;
+    }
+
+    .option-label input[type="radio"] {
+      width: 1.2rem;
+      height: 1.2rem;
+      accent-color: var(--primary);
+    }
+
+    .btn-submit-quiz {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      border: none;
+      padding: 1.1rem 2.5rem;
+      border-radius: 50px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: block;
+      margin: 2rem auto;
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+      transition: all 0.3s;
+    }
+
+    .btn-submit-quiz:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(16, 185, 129, 0.5);
+    }
+
+    /* Certificate Modal & Layout */
+    .cert-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      overflow-y: auto;
+      padding: 2rem 1rem;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cert-box {
+      background: #fff;
+      border: 12px double #b45309;
+      border-radius: 20px;
+      max-width: 850px;
+      width: 100%;
+      padding: 3rem 2.5rem;
+      position: relative;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      background-image: radial-gradient(#fef3c7 1px, transparent 1px);
+      background-size: 24px 24px;
+      text-align: center;
+      margin: auto;
+    }
+
+    .cert-seal {
+      position: absolute;
+      top: 2rem;
+      left: 2rem;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fde047 0%, #d97706 100%);
+      border: 3px solid #b45309;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      color: #78350f;
+      font-size: 2rem;
+    }
+
+    .cert-header h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 2.3rem;
+      color: #1e3a8a;
+      letter-spacing: 2px;
+      margin-bottom: 0.3rem;
+    }
+
+    .cert-header h3 {
+      font-size: 1.8rem;
+      color: #b45309;
+      margin-bottom: 1.5rem;
+      font-weight: 800;
+    }
+
+    .cert-body {
+      font-size: 1.25rem;
+      color: #334155;
+      line-height: 2;
+      margin: 1.5rem 0;
+    }
+
+    .cert-student-name {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #0f172a;
+      border-bottom: 2px dashed #b45309;
+      padding: 0 1.5rem 0.3rem;
+      display: inline-block;
+      margin: 0.5rem 0;
+    }
+
+    .cert-score-badge {
+      display: inline-block;
+      background: #10b981;
+      color: white;
+      padding: 0.4rem 1.2rem;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 1.2rem;
+      margin: 0.8rem 0;
+    }
+
+    .cert-footer {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 2px solid #e2e8f0;
+      text-align: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .cert-sig h4 {
+      font-size: 1.1rem;
+      color: #64748b;
+      margin-bottom: 0.3rem;
+    }
+
+    .cert-sig p {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #1e3a8a;
+    }
+
+    .cert-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1.8rem;
+    }
+
+    .cert-actions button {
+      padding: 0.8rem 2rem;
+      border: none;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-print {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-close {
+      background: #64748b;
+      color: white;
+    }
+
+    /* Notification */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0f172a;
+      color: white;
+      padding: 0.8rem 1.6rem;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      .cert-overlay, .cert-box, .cert-box * {
+        visibility: visible;
+      }
+      .cert-overlay {
+        position: absolute;
+        inset: 0;
+        background: none;
+        padding: 0;
+      }
+      .cert-box {
+        border: 4px double #b45309;
+        box-shadow: none;
+        width: 100%;
+        max-width: 100%;
+        page-break-after: avoid;
+      }
+      .cert-actions {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1><i class="fa-solid fa-graduation-cap"></i> بوابة المفردات والتطبيق التفاعلي</h1>
+    <p>A Vision of the Future & 1955 Predictions</p>
+    <div class="meta-bar">
+      <div class="meta-tag">
+        <i class="fa-solid fa-chalkboard-user"></i>
+        <span>المعلم: <strong>محمد عبدالله عثمان</strong></span>
+      </div>
+      <div class="meta-tag">
+        <i class="fa-solid fa-phone"></i>
+        <span dir="ltr"><strong>0530665625</strong></span>
+      </div>
+      <div class="meta-tag">
+        <i class="fa-solid fa-bullhorn"></i>
+        <span>نطق أمريكي أصيل وطبيعي (American Slang & Accent)</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Tabs Header -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" id="tab-words-btn" onclick="switchTab('words')">
+        <i class="fa-solid fa-book-open-reader"></i> بنك الكلمات والجمل الصوتية
+      </button>
+      <button class="tab-btn" id="tab-quiz-btn" onclick="switchTab('quiz')">
+        <i class="fa-solid fa-list-check"></i> الاختبار الإلكتروني والشهادة
+      </button>
+    </div>
+
+    <!-- Student Name Input Bar -->
+    <div class="student-card">
+      <label for="student-name-input"><i class="fa-solid fa-user-graduate"></i> اسم الطالب / الطالبة:</label>
+      <input type="text" id="student-name-input" placeholder="اكتب اسمك هنا لتسجيله على الشهادة...">
+    </div>
+
+    <!-- Words Tab View -->
+    <div id="words-view" class="words-view">
+      <div class="word-grid" id="word-list-container">
+        <!-- Dynamically populated or rendered -->
+      </div>
+    </div>
+
+    <!-- Quiz Tab View -->
+    <div id="quiz-view" class="quiz-view">
+      <form id="quiz-form">
+        <div id="quiz-questions-container">
+          <!-- Dynamically populated -->
+        </div>
+        <button type="button" class="btn-submit-quiz" onclick="evaluateQuiz()">
+          <i class="fa-solid fa-paper-plane"></i> تصحيح الاختبار واستلام الشهادة
+        </button>
+      </form>
+    </div>
+
+  </div>
+
+  <!-- Certificate Modal -->
+  <div id="cert-overlay" class="cert-overlay">
+    <div class="cert-box">
+      <div class="cert-seal">
+        <i class="fa-solid fa-award"></i>
+      </div>
+      <div class="cert-header">
+        <h2>CERTIFICATE OF ACHIEVEMENT</h2>
+        <h3>شهادة تميـّز وتفـوق</h3>
+      </div>
+      <div class="cert-body">
+        تشهد إدارة المادة بأن الطالب / الطالبة:
+        <br>
+        <span class="cert-student-name" id="cert-name-display">فلان الفلاني</span>
+        <br>
+        قد اجتاز بنجاح واقتدار الاختبار الإلكتروني لمفردات نصوص:
+        <br>
+        <strong>(A Vision of the Future & 1955 Predictions)</strong>
+        <br>
+        وحصل على درجة:
+        <br>
+        <div class="cert-score-badge" id="cert-score-display">10 / 10</div>
+        <br>
+        مع تمنياتنا له بمزيد من التقدم والريادة الأكاديمية.
+      </div>
+      <div class="cert-footer">
+        <div class="cert-sig">
+          <h4>معلم المادة</h4>
+          <p>أ. محمد عبدالله عثمان</p>
+        </div>
+        <div class="cert-sig">
+          <h4>رقم التواصل</h4>
+          <p dir="ltr">0530665625</p>
+        </div>
+        <div class="cert-sig">
+          <h4>تاريخ الإصدار</h4>
+          <p id="cert-date"></p>
+        </div>
+      </div>
+      <div class="cert-actions">
+        <button type="button" class="btn-print" onclick="window.print()">
+          <i class="fa-solid fa-print"></i> طباعة / حفظ الشهادة PDF
+        </button>
+        <button type="button" class="btn-close" onclick="closeCert()">
+          <i class="fa-solid fa-xmark"></i> إغلاق
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">جاري النطق...</div>
+
+  <script>
+    // Data definition: 15 Core Words with Slang/Colloquial Sentences
+    const vocabularyData = [
+      {
+        word: "Visionary",
+        wordAr: "صاحب رؤية مستقبلية / ملهم",
+        sentenceEn: "That guy is a real visionary; he totally saw the whole AI boom coming years ago.",
+        sentenceAr: "هالرجال صاحب نظرة ورؤية مستقبلية، جاب العلم وتوقع ثورة الذكاء الاصطناعي من سنين."
+      },
+      {
+        word: "Catch on",
+        wordAr: "يلقى رواجاً / يضرب ترند / ينتشر",
+        sentenceEn: "I honestly didn't think this crazy new trend would ever catch on so fast.",
+        sentenceAr: "بصراحة ما هقيت إن هالهبّة الغريبة بتنتشر وتضرب ترند بهالسرعة."
+      },
+      {
+        word: "Doubt",
+        wordAr: "يشك / يرتاب",
+        sentenceEn: "I seriously doubt they're gonna pull it off without some serious hustle.",
+        sentenceAr: "أنا شاك تماماً إنهم يقدرون يضبطون الشغلة بدون كرف وتعب حقيقي."
+      },
+      {
+        word: "Skyscrapers",
+        wordAr: "ناطحات سحاب",
+        sentenceEn: "Downtown is just packed with gigantic skyscrapers that scrape the clouds.",
+        sentenceAr: "وسط البلد مليان ناطحات سحاب عملاقة تناطح السحاب فعلاً."
+      },
+      {
+        word: "Submarine",
+        wordAr: "غواصة",
+        sentenceEn: "They explored the pitch-black ocean floor cruising in a badass submarine.",
+        sentenceAr: "استكشفوا قاع المحيط المظلم وهم راكبين غواصة فخمة وقوية."
+      },
+      {
+        word: "Appliances",
+        wordAr: "أجهزة منزلية / كهربائية",
+        sentenceEn: "Our kitchen is full of smart appliances that practically do all the chores for us.",
+        sentenceAr: "مطبخنا مليان أجهزة ذكية صارت تسوي كل شغل البيت بدالنا."
+      },
+      {
+        word: "Groceries",
+        wordAr: "أغراض البقالة والمقاضي",
+        sentenceEn: "Can you hit the store and grab some groceries before they shut down tonight?",
+        sentenceAr: "تقدر تمر البقالة وتجيب المقاضي قبل ما يقفلون الليلة؟"
+      },
+      {
+        word: "Inventions",
+        wordAr: "اختراعات / ابتكارات",
+        sentenceEn: "Some of the coolest modern inventions started out as sheer accidents.",
+        sentenceAr: "بعض من أروع الاختراعات الحديثة بدت أصلاً كضربة حظ وصدفة بحتة."
+      },
+      {
+        word: "Rocket",
+        wordAr: "صاروخ",
+        sentenceEn: "The tech startup took off like a rocket and made millions overnight.",
+        sentenceAr: "الشركة الناشئة انطلقت مثل الصاروخ وجابت ملايين بين يوم وليلة."
+      },
+      {
+        word: "Gas-powered",
+        wordAr: "يعمل بالبنزين / الوقود",
+        sentenceEn: "He's still driving an old-school gas-powered truck that drinks fuel like crazy.",
+        sentenceAr: "للحين يسوق شاحنة قديمة تشتغل عالبنزين وتشرب بانزين شرب."
+      },
+      {
+        word: "Predictions",
+        wordAr: "توقعات / تنبؤات",
+        sentenceEn: "His wild predictions about the championship game were totally spot on!",
+        sentenceAr: "توقعاته الجريئة عن نهائي البطولة طلعت مضبوطة وفي الصميم!"
+      },
+      {
+        word: "Depths",
+        wordAr: "أعماق / قيعان",
+        sentenceEn: "Divers plunged right into the mysterious depths of the cold blue sea.",
+        sentenceAr: "الغواصين نزلوا على طول في أعماق وظلمات البحر الأزرق البارد."
+      },
+      {
+        word: "Adventure",
+        wordAr: "مغامرة تشويقية",
+        sentenceEn: "Ditching town for a spontaneous road trip was one heck of an adventure.",
+        sentenceAr: "لما تركنا الديرة وطلعنا خط فجأة كانت مغامرة من العيار الثقيل."
+      },
+      {
+        word: "Contract",
+        wordAr: "عقد / اتفاقية رسمية",
+        sentenceEn: "The top rookie just signed a mega contract worth millions of bucks.",
+        sentenceAr: "اللاعب الجديد وقّع عقد ضخم يسوى ملايين الدولارات."
+      },
+      {
+        word: "Reality",
+        wordAr: "واقع / حقيقة ملموسة",
+        sentenceEn: "After graduation, real-life hustle hit him and reality set in.",
+        sentenceAr: "بعد التخرج، كرف الحياة صدمه وصار الواقع قدام عيونه حقيقة ملموسة."
+      }
+    ];
+
+    // Quiz Questions Data (10 Questions)
+    const quizQuestions = [
+      {
+        q: "ما معنى كلمة (Visionary) كما وردت في سياق الحديث عن جول فيرن؟",
+        options: [
+          "شخص صاحب رؤية استشرافية للمستقبل",
+          "شخص يرتدي نظارة طبية",
+          "شخص يحب المغامرات العسكرية",
+          "رسام متخصص في المناظر الطبيعية"
+        ],
+        correct: 0
+      },
+      {
+        q: "أي مصطلح أمريكي شائع يعني 'يلقى رواجاً وشعبية وينتشر بين الناس'؟",
+        options: ["Catch off", "Catch on", "Look out", "Fall behind"],
+        correct: 1
+      },
+      {
+        q: "ترجمة كلمة (Skyscrapers) هي:",
+        options: ["سفن فضائية", "ناطحات سحاب", "أنفاق عميقة", "محطات قطار سريعة"],
+        correct: 1
+      },
+      {
+        q: "معنى عبارة (Gas-powered) هو:",
+        options: ["يعمل بالكهرباء", "يعمل بالطاقة الشمسية", "يعمل بالوقود / البنزين", "يعمل يدوياً"],
+        correct: 2
+      },
+      {
+        q: "كلمة (Appliances) تشير بوجه خاص إلى:",
+        options: ["الأجهزة المنزلية والكهربائية", "ملابس السهرة", "قطع غيار السيارات", "أدوات النجارة اليدوية"],
+        correct: 0
+      },
+      {
+        q: "المصطلح المعبر عن 'مقاضي واحتياجات البقالة والتموين' بالإنجليزية هو:",
+        options: ["Pharmacies", "Bakeries", "Groceries", "Contracts"],
+        correct: 2
+      },
+      {
+        q: "عندما نقول: 'I seriously doubt that...' فإن كلمة (Doubt) تعني:",
+        options: ["أؤكد وأجزم", "أشك وأرتاب", "أتمنى وآمل", "أعد رسمياً"],
+        correct: 1
+      },
+      {
+        q: "المركبة التي تغوص في أعماق المحيط (Depths of the ocean) تسمى:",
+        options: ["Submarine", "Rocket", "Automobile", "Typewriter"],
+        correct: 0
+      },
+      {
+        q: "معنى كلمة (Inventions) هو:",
+        options: ["دعوات رسمية", "اختراعات وابتكارات", "استثمارات مالية", "روايات أدبية"],
+        correct: 1
+      },
+      {
+        q: "كلمة (Contract) تعني:",
+        options: ["عقد أو اتفاقية ملزمة", "مباراة رياضية", "مكتب عمل", "قرض شخصي"],
+        correct: 0
+      }
+    ];
+
+    // Speech Synthesis with American Voice
+    function speakText(text) {
+      if (!('speechSynthesis' in window)) {
+        showToast("المتصفح لا يدعم خاصية نطق الصوت.");
+        return;
+      }
+
+      window.speechSynthesis.cancel(); // Stop any ongoing speech
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.95; // Natural colloquial pace
+      utterance.pitch = 1.0;
+
+      const voices = window.speechSynthesis.getVoices();
+      
+      // Look for natural US voice
+      const usVoice = voices.find(v => (v.name.includes("Google US English") || v.name.includes("Natural") || v.name.includes("David") || v.name.includes("Alex") || v.name.includes("Zira")) && v.lang.startsWith("en-US")) 
+                      || voices.find(v => v.lang === "en-US")
+                      || voices.find(v => v.lang.startsWith("en"));
+
+      if (usVoice) {
+        utterance.voice = usVoice;
+      }
+
+      utterance.onstart = () => showToast("🔊 جاري النطق الأمريكي...");
+      window.speechSynthesis.speak(utterance);
+    }
+
+    // Ensure voices are loaded
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+      };
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    // Render Words List
+    function renderWordCards() {
+      const container = document.getElementById('word-list-container');
+      container.innerHTML = vocabularyData.map((item, index) => `
+        <div class="word-card">
+          <div class="word-card-top">
+            <div class="word-en-box">
+              <button class="audio-btn" onclick="speakText('${escapeQuotes(item.word + '. ' + item.sentenceEn)}')" title="استمع للنطق الأمريكي">
+                <i class="fa-solid fa-volume-high"></i>
+              </button>
+              <div class="word-en en">${index + 1}. ${item.word}</div>
+            </div>
+            <div class="word-ar ar">${item.wordAr}</div>
+          </div>
+          <div class="sentences-box">
+            <div class="sentence-en en"><strong>Ex:</strong> "${item.sentenceEn}"</div>
+            <div class="sentence-ar ar"><strong>السياق:</strong> "${item.sentenceAr}"</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function escapeQuotes(str) {
+      return str.replace(/'/g, "\'");
+    }
+
+    // Render Quiz
+    function renderQuiz() {
+      const container = document.getElementById('quiz-questions-container');
+      container.innerHTML = quizQuestions.map((qItem, qIndex) => `
+        <div class="quiz-card">
+          <div class="quiz-header">
+            <span class="q-number">السؤال ${qIndex + 1} من ${quizQuestions.length}</span>
+            <span class="q-points"><i class="fa-solid fa-star"></i> درجة واحدة</span>
+          </div>
+          <div class="q-title">${qItem.q}</div>
+          <div class="q-options">
+            ${qItem.options.map((opt, optIndex) => `
+              <label class="option-label" for="q${qIndex}_opt${optIndex}">
+                <input type="radio" id="q${qIndex}_opt${optIndex}" name="q${qIndex}" value="${optIndex}">
+                <span>${opt}</span>
+              </label>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Switch Tabs
+    function switchTab(tab) {
+      const wordsView = document.getElementById('words-view');
+      const quizView = document.getElementById('quiz-view');
+      const btnWords = document.getElementById('tab-words-btn');
+      const btnQuiz = document.getElementById('tab-quiz-btn');
+
+      if (tab === 'words') {
+        wordsView.style.display = 'block';
+        quizView.style.display = 'none';
+        btnWords.classList.add('active');
+        btnQuiz.classList.remove('active');
+      } else {
+        wordsView.style.display = 'none';
+        quizView.style.display = 'block';
+        btnWords.classList.remove('active');
+        btnQuiz.classList.add('active');
+      }
+    }
+
+    // Evaluate Quiz
+    function evaluateQuiz() {
+      const studentInput = document.getElementById('student-name-input');
+      const studentName = studentInput.value.trim();
+
+      if (!studentName) {
+        alert("يرجى كتابة اسم الطالب أولاً في الحقل المخصص أعلى الصفحة لإصدار الشهادة باسمك!");
+        studentInput.focus();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      let score = 0;
+      let unanswered = 0;
+
+      quizQuestions.forEach((qItem, index) => {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+        if (!selected) {
+          unanswered++;
+        } else if (parseInt(selected.value) === qItem.correct) {
+          score++;
+        }
+      });
+
+      if (unanswered > 0) {
+        if (!confirm(`لديك ${unanswered} أسئلة لم تقم بالإجابة عليها بعد. هل ترغب في إنهاء الاختبار وتصحيحه الآن؟`)) {
+          return;
+        }
+      }
+
+      // Display Certificate
+      document.getElementById('cert-name-display').innerText = studentName;
+      document.getElementById('cert-score-display').innerText = `${score} / ${quizQuestions.length}`;
+      
+      const today = new Date();
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('cert-date').innerText = today.toLocaleDateString('ar-SA', options) || today.toLocaleDateString('ar-EG', options);
+
+      const overlay = document.getElementById('cert-overlay');
+      overlay.style.display = 'flex';
+
+      // Confetti celebration if score is high
+      if (score >= 7 && typeof confetti === 'function') {
+        confetti({
+          particleCount: 120,
+          spread: 80,
+          origin: { y: 0.6 }
+        });
+      }
+    }
+
+    function closeCert() {
+      document.getElementById('cert-overlay').style.display = 'none';
+    }
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', () => {
+      renderWordCards();
+      renderQuiz();
+    });
+  </script>
+</body>
+</html>
